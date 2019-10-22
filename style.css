@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+
+/*Start Home Page*/
+*, button {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+}
+#product {
+    width: 90%;
+    margin: auto;
+}
+#product th {
+    font-size: 20px;
+    background: #3c6382;
+    color: white;
+    padding: 20px 0;
+    cursor: pointer;
+}
+#product td {
+    padding: 10px 0px;
+    border-bottom: 1px solid #d3d3d3;
+}
+#product tr:hover {
+    background: rgba(0, 0, 0, .1);
+}
+.btn {
+    padding: 10px 20px;
+    border: 1px solid #38ada9;
+    border-radius: 20px;
+    font-size: 14.5px;
+    outline: none;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.2s ease-in;
+}
+.btn:hover {
+    background: #38ada9;
+    color: white;
+}
+.btnEdit {
+    border: 1px solid #f6b93b;
+}
+.btnEdit:hover {
+    background: #f6b93b;
+}
+.btnDelete {
+    border: 1px solid #eb2f06;
+}
+.btnDelete:hover {
+    background: #eb2f06;
+}
+.loginSection {
+    float: right;
+    padding-bottom: 20px;
+}
+.content {
+    clear: both;
+    font-size: 40px;
+    padding: 30px 0;
+}
+#username, #password {
+    width: 120px;
+    padding: 5px 10px;
+    border: 1px solid #d3d3d3;
+    border-radius: 20px;
+    outline: none;
+    text-align: right;
+}
+.loginBtn {
+    padding: 5px 5px;
+    border-radius: 20px;
+    border: 1px solid black;
+    background: transparent;
+    cursor: pointer;
+}
+.loginBtn:hover, .logoutBtn:hover, .cartBtn:hover {
+    background: black;
+    color: white;
+}
+
+/*End Home Page*/
+
+/*Start Admin Page*/
+.addNewShoesSec {
+    padding: 20px 0;
+    text-align: left;
+    margin-left: 5%;
+}
+
+.addNewShoesSec input {
+    padding: 10px 0;
+    border-radius: 20px;
+    border: 1px solid #d3d3d3;
+    outline: none;
+    margin-right: 10px;
+}
+#shoesImg {
+    display: none;
+}
+#labelForImg, .labelChangeImg {
+    color: black;
+    padding: 10px 20px;
+    background: transparent;
+    font-size: 15px;
+    border: 1px solid #38ada9;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+#labelForImg:hover {
+    background: #38ada9;
+    color: white;
+}
+
+#product td input {
+    background: transparent;
+    border: none;
+    font-size: 15px;
+    outline: none;
+}
+.shoesImage {
+    display: none;
+}
+.labelChangeImg {
+    display: none;
+}
+#product td div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: 0;
+}
+.logoutBtn, .backBtn {
+    padding: 10px 10px;
+    border: 1px solid black;
+    background: transparent;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.logoutBtn {
+    float: right;
+}
+.backBtn {
+    float: left;
+    margin-left: 5%;
+}
+.cartBtn {
+    padding: 7px 10px;
+    border: 1px solid black;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#sort {
+    float: right;
+    margin-right: 5%;
+    font-size: 15px;
+    padding: 10px 10px;
+}
+#sort option {
+    margin-bottom: 10px;
+}
+
+/*End Admin Page*/
+
+.left-wrap {
+    width: 70%;
+    float: left;
+}
+.right-wrap {
+    width: 30%;
+    float: left;
+}
+#total {
+    width: 100%;
+    height: 200px;
+}
+.payBtn {
+    padding: 15px 25px;
+    border: 1px solid #78e08f;
+    border-radius: 20px;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    font-size: 30px;
+}
+.payBtn:hover {
+    background: #78e08f;
+    color: white;
+}
+.thank {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.thank h1 {
+    font-size: 70px;
+}

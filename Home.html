@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/7d89f181f6.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="showData()">
+    <div class="loginSection">
+        <input type="text" id="username" placeholder="username">
+        <input type="password" id="password" placeholder="password">
+        <button class="loginBtn" onclick="login()">Login</button>
+        <button class="cartBtn" onclick="toCart()"><i class="fas fa-shopping-cart"></i></button>
+    </div>
+    <h1 class="content">Welcome to shoes store</h1>
+    <table id="product" cellspacing="0px"></table>
+    <script>
+        let data = JSON.parse(localStorage.getItem("data"));
+
+        function showData() {
+            let result = `<tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th></th>
+            </tr>`;
+            if(data.length > 0) {
+                for(let i = 0; i < data.length; i++) {
+                    result += `<tr>
+                        <td>${data[i].name}</td>
+                        <td><img src="image/${data[i].image}" width="100px" height="100px"></td>
+                        <td>${data[i].price} vnđ</td>
+                        <td><button class="btn" onclick="addToCart(${i})">Thêm vào giỏ hàng</button></td>
+                    </tr>`;
+                }
+            } else {
+                result = `<h1>Chưa có sản phẩm nào trong cửa hàng</h1>`;
+            }
+            document.getElementById("product").innerHTML = result;
+        }
+
+        let cart = [];
+        // if(typeof(Storage) !== "undefined") {
+        //     let a = JSON.stringify(cart);
+        //     localStorage.setItem("cart", a);
+        // } else {
+        //     alert("not support");
+        // }
+
+        function addToCart(index) {
+            alert(`Đã thêm ${data[index].name} vào giỏ`);
+            //let oldCart = JSON.parse(localStorage.getItem("cart"));
+            let count = 0;
+            let a = new shoppingCart(data[index]);
+            a.count = 1;
+            for(let item in cart) {
+                if(cart[item].product.name == a.product.name) {
+                    count++;
+                }
+            }
+            if(count > 0) {
+                cart[index].count++;
+                cart[index].amount = a.product.price * cart[index].count;
+            } else {
+                cart.push(a);
+            }
+            if(typeof(Storage) !== "undefined") {
+                let chooseItem = JSON.stringify(cart);
+                localStorage.setItem("bought",chooseItem);
+            } else {
+                alert("Not support");
+            }
+            // if(oldCart.length > 0) {
+            //     let newCart = JSON.parse(localStorage.getItem("bought"));
+            //     for(let item in oldCart) {
+            //         if(newCart[item].product.name == a.product.name) {
+            //             count++;
+            //         }
+            //     }
+            //     if(count > 0) {
+            //         newCart[index].count++;
+            //         newCart[index].amount = a.product.price * oldCart[index].count;
+            //     } else {
+            //         newCart.push(a);
+            //     }
+            //     if(typeof(Storage) !== "undefined") {
+            //         let chooseItem = JSON.stringify(newCart);
+            //         localStorage.setItem("bought",chooseItem);
+            //     } else {
+            //         alert("Not support");
+            //     }
+            // } else {
+            //     cart.push(a);
+            //     if(typeof(Storage) !== "undefined") {
+            //         let chooseItem = JSON.stringify(cart);
+            //         localStorage.setItem("bought",chooseItem);
+            //         localStorage.setItem("cart",chooseItem);
+            //     } else {
+            //         alert("Not support");
+            //     }
+            // }
+        }
+
+        let shoppingCart = function(product) {
+            this.product = product;
+            this.count = 0;
+            this.amount = Number(this.product.price);
+        }
+
+        let Users = function(username, password) {
+            this.username = username;
+            this.password = password;
+            this.checkLogin = function(username, password) {
+                if(username !== "" && password !== "") {
+                    if(username === this.username && password === this.password) {
+                        window.location = "index.html";
+                    } else {
+                        alert("Sai tên đăng nhập hoặc mật khẩu");
+                    }
+                } else {
+                    alert("Tên đăng nhập và mật khẩu không được để trống");
+                }
+            }
+        }
+
+        function login() {
+            let admin = new Users("admin","12345");
+            let uName = document.getElementById("username");
+            let uPass = document.getElementById("password");
+            admin.checkLogin(uName.value, uPass.value);
+        }
+
+        function toCart() {
+            window.location = "cart.html";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="showCart()">
+    <div>
+        <button class="backBtn" onclick="keepBuy()">Tiếp tục mua hàng</button>
+        <h1>Shopping Cart</h1>
+    </div>
+    <div class="left-wrap">
+        <table id="product" cellspacing="0"></table>
+    </div>
+    <div class="right-wrap">
+        <div id="total"></div>
+        <button class="payBtn" onclick="Pay()">Thanh toán</button>
+    </div>
+    <script>
+        let cart = JSON.parse(localStorage.getItem("bought"));
+        function showCart() {
+            let result = `<tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th><th>
+            </tr>`;
+            for(let item in cart) {
+                result += `<tr>
+                    <td>${cart[item].product.name}</td>
+                    <td><img src="image/${cart[item].product.image}" width="150px" height="150px"></td>
+                    <td><input type="number" class="newNum" value="${cart[item].count}" onchange="changeNum(${item})"></td>
+                    <td>${cart[item].amount}</td>
+                    <td><button class="btn btnDelete" onclick="deleteItem(${item})">Xóa</button><td>
+                </tr>`;
+            }
+            document.getElementById("product").innerHTML = result;
+            displayTotal();
+        }
+
+        function displayTotal() {
+            let result = `<h1>Total amount</h1><hr>`;
+            let total = 0;
+            for(let item in cart) {
+                total += cart[item].amount;
+            }
+            result += `<span style="float:left;font-size:20px;margin-top:25px;">Total:</span>
+            <span style="float: right;font-size:25px;font-weight:500;margin-top:20px;">${total}</span>`
+            document.getElementById("total").innerHTML = result;
+        }
+
+        let newNum = document.getElementsByClassName("newNum");
+        function changeNum(index) {
+            let originAmount = cart[index].amount / cart[index].count;
+            let num = newNum[index].value;
+            cart[index].count = Number(num);
+            cart[index].amount = originAmount * cart[index].count;
+            updateCart();
+            showCart();
+        }
+
+        function updateCart() {
+            if(typeof(Storage) !== "undefined") {
+                let chooseItem = JSON.stringify(cart);
+                localStorage.setItem("bought",chooseItem);
+            } else {
+                alert("Not support");
+            }
+        }
+
+        function deleteItem(index) {
+            alert(`Đã xóa ${cart[index].product.name} khỏi giỏ hàng`);
+            for(let i = index; i < cart.length; i++) {
+                cart[i] = cart[i + 1];
+            }
+            cart.length = cart.length - 1;
+            updateCart();
+            showCart();
+        }
+
+        function Pay() {
+            localStorage.removeItem("bought");
+            let result = `
+            <div class="thank">
+                <h1>Thanks for buying our shoes !!!</h1>
+                <button class="payBtn" onclick="window.location='Home.html'">Back to Home</button>
+            </div>
+            `;
+            document.getElementsByTagName("body")[0].innerHTML = result;
+        }
+
+        function keepBuy() {
+            window.location = "Home.html";
+        }
+    </script>
+</body>
+</html>
