@@ -8,160 +8,197 @@
     <script src="https://kit.fontawesome.com/7d89f181f6.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div>
-        <button class="logoutBtn" onclick="logout()">Đăng xuất</button>
-        <h1>Administration page</h1>
+<body onload="showData()">
+    <div class="loginSection">
+        <div class="searchItem">
+            <input type="text" placeholder="Nhập tên sản phẩm" oninput="search(this.value)">
+            <div class="searchResult"></div>
+        </div>
+        <input type="text" id="username" placeholder="username">
+        <input type="password" id="password" placeholder="password">
+        <button class="loginBtn" onclick="login()">Login</button>
+        <button class="cartBtn" onclick="toCart()"><i class="fas fa-shopping-cart"></i></button>
     </div>
-    <div class="addNewShoesSec">
-        <input type="text" id="shoesName">
-        <input type="text" id="shoesPrice">
-        <input type="file" id="shoesImg" onchange="changeLabelName();">
-        <label for="shoesImg" id="labelForImg">Choose a photo</label>
-        <button class="btn" onclick="addShoes();">Thêm</button>
-    </div>
+    <h1 class="content">Shoes store</h1>
     <table id="product" cellspacing="0px"></table>
     <script>
+        let data = JSON.parse(localStorage.getItem("data"));
 
-    let Shoes = function(name, price, image) {
-        this.name = name;
-        this.price = price;
-        this.image = image;
-    }
-
-
-
-    let App = function() {
-        this.data = [
-            {name: "Adidas NMD R1 (black)", price: "900000", image: "adidas_NMDR1.jpg"},
-            {name: "Nike Airforce (white)", price: "870000", image: "nike_airforce1.jpg"},
-            {name: "Nike AirMax (black)", price: "770000", image: "nike_airmax270.jpg"},
-            ];
-
-        this.newShoes = function(name, price, image) {
-            let shoes = new Shoes(name, price, image);
-            return shoes;
-        }
-
-        this.addProduct = function(value) {
-            let count = 0
-            if(this.data.length > 0) {
-                for(let item in this.data) {
-                    if(this.data[item].name == value.name) {
-                        alert(this.data[item] + " đã có trong dữ liệu");
-                        count++;
-                    }
-                }
-            }
-            if(count == 0) {
-                this.data.push(value);
-            }
-
-        };
-
-        this.editProduct = function(value, newValue) {
-            for(let item in this.data) {
-                if(item == value) {
-                    this.data[value] = newValue;
-                }
-            }
-        }
-
-        this.deleteProduct = function(index) {
-            for(let i = index; i < this.data.length; i++) {
-                this.data[i] = this.data[i + 1];
-            }
-            this.data.length = this.data.length - 1;
-        }
-
-        this.showData = function() {
+        function showData() {
             let result = `<tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Image</th>
-                    <th></th>
-                    <th></th>
-                </tr>`;
-            for(let item in this.data) {
-                result += `<tr>
-                        <td><input type="text" value="${this.data[item].name}" class="shoesName" readonly></td>
-                        <td><input type="text" value="${this.data[item].price}" class="shoesPrice" readonly></td>
-                        <td>
-                            <div>
-                                <img src="image/${this.data[item].image}" width="100px" height="100px">
-                                <input type="file" class="shoesImage" id="changeImg">
-                            </div>
-                        </td>
-                        <td><button class="btn btnEdit" onclick="editShoes(${item},this);">Sửa</button></td>
-                        <td><button class="btn btnDelete" onclick="deleteShoes(${item});">Xóa</button></td>
-                    </tr>`
+                <th>Product</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th></th>
+            </tr>`;
+            if(data.length > 0) {
+                for(let i = 0; i < data.length; i++) {
+                    result += `<tr>
+                        <td>${data[i].name}</td>
+                        <td><img src="image/${data[i].image}" width="100px" height="100px"></td>
+                        <td>${data[i].price} vnđ</td>
+                        <td><button class="btn" onclick="addToCart(${i})">Thêm vào giỏ hàng</button></td>
+                    </tr>`;
+                }
+            } else {
+                result = `<h1>Chưa có sản phẩm nào trong cửa hàng</h1>`;
             }
             document.getElementById("product").innerHTML = result;
-            this.storage();
-        };
+        }
 
-        this.storage = function() {
+        // let cart = function() {
+        //     this.arr = [];
+
+        //     this.addNewCart = function(obj) {
+        //         this.arr.push(obj);
+        //         return this.arr;
+        //     }
+
+        //     this.storage = function() {
+        //         if(typeof(Storage) !== "undefined") {
+        //             let str = JSON.stringify(this.arr);
+        //             localStorage.setItem("bought",str);
+        //         } else {
+        //             alert("not suppport");
+        //         }
+        //     }
+        // };
+        let cart = [];
+
+        function addToCart(index) {
+            alert(`Đã thêm ${data[index].name} vào giỏ`);
+            //let oldCart = JSON.parse(localStorage.getItem("cart"));
+            let count = 0;
+            let a = new shoppingCart(data[index]);
+            a.count = 1;
+            for(let item in cart) {
+                if(cart[item].product.name == a.product.name) {
+                    count++;
+                }
+            }
+            if(count > 0) {
+                for(let item in cart) {
+                    if(cart[item].product.name == a.product.name) {
+                        cart[item].count++;
+                        cart[item].amount = a.product.price * cart[item].count;
+                    }
+                }   
+            } else {
+                cart.push(a);
+            }
             if(typeof(Storage) !== "undefined") {
-                let cart = JSON.stringify(this.data);
-                localStorage.setItem("data", cart);
+                let chooseItem = JSON.stringify(cart);
+                localStorage.setItem("bought",chooseItem);
             } else {
                 alert("Not support");
             }
-        };
-    }
-
-    let app = new App();
-    app.showData();
-    let name = document.getElementById("shoesName");
-    let price = document.getElementById("shoesPrice");
-    let image = document.getElementById("shoesImg");
-
-    let label = document.getElementById("labelForImg");
-    function changeLabelName() {
-        if(image.value === "") {
-            label.innerText = "Choose an image";
-        } else {
-            label.innerText = image.value.substring(image.value.lastIndexOf("\\") + 1, image.value.length);
+            // //b.storage();
+            // // if(oldCart.length > 0) {
+            // //     let newCart = JSON.parse(localStorage.getItem("bought"));
+            // //     for(let item in oldCart) {
+            // //         if(newCart[item].product.name == a.product.name) {
+            // //             count++;
+            // //         }
+            // //     }
+            // //     if(count > 0) {
+            // //         newCart[index].count++;
+            // //         newCart[index].amount = a.product.price * oldCart[index].count;
+            // //     } else {
+            // //         newCart.push(a);
+            // //     }
+            // //     if(typeof(Storage) !== "undefined") {
+            // //         let chooseItem = JSON.stringify(newCart);
+            // //         localStorage.setItem("bought",chooseItem);
+            // //     } else {
+            // //         alert("Not support");
+            // //     }
+            // // } else {
+            // //     cart.push(a);
+            // //     if(typeof(Storage) !== "undefined") {
+            // //         let chooseItem = JSON.stringify(cart);
+            // //         localStorage.setItem("bought",chooseItem);
+            // //         localStorage.setItem("cart",chooseItem);
+            // //     } else {
+            // //         alert("Not support");
+            // //     }
+            // // }
         }
-    }
 
-    function addShoes() {
-        let picture = image.value.substring(image.value.lastIndexOf("\\") + 1, image.value.length);
-        app.addProduct(app.newShoes(name.value, price.value, picture));
-        app.showData();
-        name.value = "";
-        price.value = "";
-        image.value = "";
-        changeLabelName();
-        app.storage();
-    }
+        let shoppingCart = function(product) {
+            this.product = product;
+            this.count = 0;
+            this.amount = Number(this.product.price);
+        }
 
-    function editShoes(index, btn) {
-        let newName = document.getElementsByClassName("shoesName");
-        let newPrice = document.getElementsByClassName("shoesPrice");
-        let newImage = document.getElementsByClassName("shoesImage");
+        let Users = function(username, password) {
+            this.username = username;
+            this.password = password;
+            this.checkLogin = function(username, password) {
+                if(username !== "" && password !== "") {
+                    if(username === this.username && password === this.password) {
+                        window.location = "admin.html";
+                    } else {
+                        alert("Sai tên đăng nhập hoặc mật khẩu");
+                    }
+                } else {
+                    alert("Tên đăng nhập và mật khẩu không được để trống");
+                }
+            }
+        }
+
+        function login() {
+            let admin = new Users("admin","12345");
+            let uName = document.getElementById("username");
+            let uPass = document.getElementById("password");
+            admin.checkLogin(uName.value, uPass.value);
+        }
+
+        function toCart() {
+            window.location = "cart.html";
+        }
         
-        if(btn.innerText === "Sửa") {
-            newName[index].readOnly = false;
-            newName[index].select();
-            newPrice[index].readOnly = false;
-            newImage[index].style.display = "block";
-            btn.innerText = "Lưu";
-        } else {
-            let newImg = newImage[index].value.substring(newImage[index].value.lastIndexOf("\\")+1,newImage[index].value.length);
-            app.editProduct(index, app.newShoes(newName[index].value, newPrice[index].value, newImg));
-            app.showData();
+        let searchResult = document.getElementsByClassName("searchResult")[0];
+        function search(value) {
+            if(value !== "") {
+                searchResult.style.display = "block";
+                console.log(value);
+                let result = "";
+                let count = 0;
+                for(let item in data) {
+                    if(checkWord(data[item].name,value)) {
+                        result += `
+                            <table class="smallTable" cellspacing="0">
+                                <tr>
+                                    <td><img src="image/${data[item].image}" width="50px" height="50px"></td>
+                                    <td>${data[item].name}</td>
+                                    <td>${data[item].price}</td>
+                                    <td><button class="smallBtn" onclick="addToCart(${item})"><i class="fas fa-plus"></i></button></td>
+                                </tr>
+                            </table>
+                        `;
+                        count++;
+                    }
+                }
+                if(count == 0) {
+                            result = `<h3>Không tìm thấy kết quả</h3>`;
+                        } else {
+                            str = `<h3>Không tìm thấy kết quả</h3>`;
+                            if(checkWord(result, str)) {
+                                result.substr(str, str.length);
+                            } 
+                        }
+                searchResult.innerHTML = result;
+            } else {
+                searchResult.style.display = "none";
+            }
         }
-    }
 
-    function deleteShoes(index) {
-        app.deleteProduct(index);
-        app.showData();
-    }
-
-    function logout() {
-        window.location = "Home.html";
-    }
+        function checkWord(item, char) {
+            if(item.toLowerCase().indexOf(char.toLowerCase()) >= 0) {
+                return true;
+            }
+            return false;
+        }
     </script>
 </body>
 </html>

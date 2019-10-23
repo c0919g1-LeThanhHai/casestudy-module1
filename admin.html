@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/7d89f181f6.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div>
+        <button class="logoutBtn" onclick="logout()">Đăng xuất</button>
+        <h1>Administration page</h1>
+    </div>
+    <div class="addNewShoesSec">
+        <input type="text" id="shoesName">
+        <input type="text" id="shoesPrice">
+        <input type="file" id="shoesImg" onchange="changeLabelName();">
+        <label for="shoesImg" id="labelForImg">Choose a photo</label>
+        <button class="btn" onclick="addShoes();">Thêm</button>
+    </div>
+    <table id="product" cellspacing="0px"></table>
+    <script>
+
+    let Shoes = function(name, price, image) {
+        this.name = name;
+        this.price = price;
+        this.image = image;
+    }
+
+
+
+    let App = function() {
+        this.data = [
+            {name: "Adidas NMD R1 (black)", price: "900000", image: "adidas_NMDR1.jpg"},
+            {name: "Nike Airforce (white)", price: "870000", image: "nike_airforce1.jpg"},
+            {name: "Nike AirMax (black)", price: "770000", image: "nike_airmax270.jpg"},
+            ];
+
+        this.newShoes = function(name, price, image) {
+            let shoes = new Shoes(name, price, image);
+            return shoes;
+        }
+
+        this.addProduct = function(value) {
+            let count = 0
+            if(this.data.length > 0) {
+                for(let item in this.data) {
+                    if(this.data[item].name == value.name) {
+                        alert(this.data[item] + " đã có trong dữ liệu");
+                        count++;
+                    }
+                }
+            }
+            if(count == 0) {
+                this.data.push(value);
+            }
+
+        };
+
+        this.editProduct = function(value, newValue) {
+            for(let item in this.data) {
+                if(item == value) {
+                    this.data[value] = newValue;
+                }
+            }
+        }
+
+        this.deleteProduct = function(index) {
+            for(let i = index; i < this.data.length; i++) {
+                this.data[i] = this.data[i + 1];
+            }
+            this.data.length = this.data.length - 1;
+        }
+
+        this.showData = function() {
+            let result = `<tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th></th>
+                    <th></th>
+                </tr>`;
+            for(let item in this.data) {
+                result += `<tr>
+                        <td><input type="text" value="${this.data[item].name}" class="shoesName" readonly></td>
+                        <td><input type="text" value="${this.data[item].price}" class="shoesPrice" readonly></td>
+                        <td>
+                            <div>
+                                <img src="image/${this.data[item].image}" width="100px" height="100px">
+                                <input type="file" class="shoesImage" id="changeImg">
+                            </div>
+                        </td>
+                        <td><button class="btn btnEdit" onclick="editShoes(${item},this);">Sửa</button></td>
+                        <td><button class="btn btnDelete" onclick="deleteShoes(${item});">Xóa</button></td>
+                    </tr>`
+            }
+            document.getElementById("product").innerHTML = result;
+            this.storage();
+        };
+
+        this.storage = function() {
+            if(typeof(Storage) !== "undefined") {
+                let cart = JSON.stringify(this.data);
+                localStorage.setItem("data", cart);
+            } else {
+                alert("Not support");
+            }
+        };
+    }
+
+    let app = new App();
+    app.showData();
+    let name = document.getElementById("shoesName");
+    let price = document.getElementById("shoesPrice");
+    let image = document.getElementById("shoesImg");
+
+    let label = document.getElementById("labelForImg");
+    function changeLabelName() {
+        if(image.value === "") {
+            label.innerText = "Choose an image";
+        } else {
+            label.innerText = image.value.substring(image.value.lastIndexOf("\\") + 1, image.value.length);
+        }
+    }
+
+    function addShoes() {
+        let picture = image.value.substring(image.value.lastIndexOf("\\") + 1, image.value.length);
+        app.addProduct(app.newShoes(name.value, price.value, picture));
+        app.showData();
+        name.value = "";
+        price.value = "";
+        image.value = "";
+        changeLabelName();
+        app.storage();
+    }
+
+    function editShoes(index, btn) {
+        let newName = document.getElementsByClassName("shoesName");
+        let newPrice = document.getElementsByClassName("shoesPrice");
+        let newImage = document.getElementsByClassName("shoesImage");
+        
+        if(btn.innerText === "Sửa") {
+            newName[index].readOnly = false;
+            newName[index].select();
+            newPrice[index].readOnly = false;
+            newImage[index].style.display = "block";
+            btn.innerText = "Lưu";
+        } else {
+            let newImg = newImage[index].value.substring(newImage[index].value.lastIndexOf("\\")+1,newImage[index].value.length);
+            app.editProduct(index, app.newShoes(newName[index].value, newPrice[index].value, newImg));
+            app.showData();
+        }
+    }
+
+    function deleteShoes(index) {
+        app.deleteProduct(index);
+        app.showData();
+    }
+
+    function logout() {
+        window.location = "index.html";
+    }
+    </script>
+</body>
+</html>
