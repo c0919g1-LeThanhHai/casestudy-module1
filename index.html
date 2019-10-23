@@ -11,7 +11,7 @@
 <body>
     <div>
         <button class="logoutBtn" onclick="logout()">Đăng xuất</button>
-        <h1>Welcome to Administration page</h1>
+        <h1>Administration page</h1>
     </div>
     <div class="addNewShoesSec">
         <input type="text" id="shoesName">
@@ -19,11 +19,6 @@
         <input type="file" id="shoesImg" onchange="changeLabelName();">
         <label for="shoesImg" id="labelForImg">Choose a photo</label>
         <button class="btn" onclick="addShoes();">Thêm</button>
-        <select name="" id="sort" onchange="sort(this.value)">
-            <option value="default">--Sắp xếp--</option>
-            <option value="up">Sắp xếp theo giá tăng dần</option>
-            <option value="down">Sắp xếp theo giá giảm dần</option>
-        </select>
     </div>
     <table id="product" cellspacing="0px"></table>
     <script>
@@ -113,12 +108,6 @@
                 alert("Not support");
             }
         };
-
-        this.sort = function(value) {
-            if(value !== "default") {
-                this.data.sort().reverse();
-            }
-        }
     }
 
     let app = new App();
@@ -173,12 +162,6 @@
     function logout() {
         window.location = "Home.html";
     }
-
-    function sort() {
-        app.sort();
-        app.showData();
-    }
-
     </script>
 </body>
 </html>

@@ -10,12 +10,16 @@
 </head>
 <body onload="showData()">
     <div class="loginSection">
+        <div class="searchItem">
+            <input type="text" placeholder="Nhập tên sản phẩm" oninput="search(this.value)">
+            <div class="searchResult"></div>
+        </div>
         <input type="text" id="username" placeholder="username">
         <input type="password" id="password" placeholder="password">
         <button class="loginBtn" onclick="login()">Login</button>
         <button class="cartBtn" onclick="toCart()"><i class="fas fa-shopping-cart"></i></button>
     </div>
-    <h1 class="content">Welcome to shoes store</h1>
+    <h1 class="content">Shoes store</h1>
     <table id="product" cellspacing="0px"></table>
     <script>
         let data = JSON.parse(localStorage.getItem("data"));
@@ -42,13 +46,24 @@
             document.getElementById("product").innerHTML = result;
         }
 
+        // let cart = function() {
+        //     this.arr = [];
+
+        //     this.addNewCart = function(obj) {
+        //         this.arr.push(obj);
+        //         return this.arr;
+        //     }
+
+        //     this.storage = function() {
+        //         if(typeof(Storage) !== "undefined") {
+        //             let str = JSON.stringify(this.arr);
+        //             localStorage.setItem("bought",str);
+        //         } else {
+        //             alert("not suppport");
+        //         }
+        //     }
+        // };
         let cart = [];
-        // if(typeof(Storage) !== "undefined") {
-        //     let a = JSON.stringify(cart);
-        //     localStorage.setItem("cart", a);
-        // } else {
-        //     alert("not support");
-        // }
 
         function addToCart(index) {
             alert(`Đã thêm ${data[index].name} vào giỏ`);
@@ -62,8 +77,12 @@
                 }
             }
             if(count > 0) {
-                cart[index].count++;
-                cart[index].amount = a.product.price * cart[index].count;
+                for(let item in cart) {
+                    if(cart[item].product.name == a.product.name) {
+                        cart[item].count++;
+                        cart[item].amount = a.product.price * cart[item].count;
+                    }
+                }   
             } else {
                 cart.push(a);
             }
@@ -73,35 +92,36 @@
             } else {
                 alert("Not support");
             }
-            // if(oldCart.length > 0) {
-            //     let newCart = JSON.parse(localStorage.getItem("bought"));
-            //     for(let item in oldCart) {
-            //         if(newCart[item].product.name == a.product.name) {
-            //             count++;
-            //         }
-            //     }
-            //     if(count > 0) {
-            //         newCart[index].count++;
-            //         newCart[index].amount = a.product.price * oldCart[index].count;
-            //     } else {
-            //         newCart.push(a);
-            //     }
-            //     if(typeof(Storage) !== "undefined") {
-            //         let chooseItem = JSON.stringify(newCart);
-            //         localStorage.setItem("bought",chooseItem);
-            //     } else {
-            //         alert("Not support");
-            //     }
-            // } else {
-            //     cart.push(a);
-            //     if(typeof(Storage) !== "undefined") {
-            //         let chooseItem = JSON.stringify(cart);
-            //         localStorage.setItem("bought",chooseItem);
-            //         localStorage.setItem("cart",chooseItem);
-            //     } else {
-            //         alert("Not support");
-            //     }
-            // }
+            // //b.storage();
+            // // if(oldCart.length > 0) {
+            // //     let newCart = JSON.parse(localStorage.getItem("bought"));
+            // //     for(let item in oldCart) {
+            // //         if(newCart[item].product.name == a.product.name) {
+            // //             count++;
+            // //         }
+            // //     }
+            // //     if(count > 0) {
+            // //         newCart[index].count++;
+            // //         newCart[index].amount = a.product.price * oldCart[index].count;
+            // //     } else {
+            // //         newCart.push(a);
+            // //     }
+            // //     if(typeof(Storage) !== "undefined") {
+            // //         let chooseItem = JSON.stringify(newCart);
+            // //         localStorage.setItem("bought",chooseItem);
+            // //     } else {
+            // //         alert("Not support");
+            // //     }
+            // // } else {
+            // //     cart.push(a);
+            // //     if(typeof(Storage) !== "undefined") {
+            // //         let chooseItem = JSON.stringify(cart);
+            // //         localStorage.setItem("bought",chooseItem);
+            // //         localStorage.setItem("cart",chooseItem);
+            // //     } else {
+            // //         alert("Not support");
+            // //     }
+            // // }
         }
 
         let shoppingCart = function(product) {
@@ -135,6 +155,49 @@
 
         function toCart() {
             window.location = "cart.html";
+        }
+        
+        let searchResult = document.getElementsByClassName("searchResult")[0];
+        function search(value) {
+            if(value !== "") {
+                searchResult.style.display = "block";
+                console.log(value);
+                let result = "";
+                let count = 0;
+                for(let item in data) {
+                    if(checkWord(data[item].name,value)) {
+                        result += `
+                            <table class="smallTable" cellspacing="0">
+                                <tr>
+                                    <td><img src="image/${data[item].image}" width="50px" height="50px"></td>
+                                    <td>${data[item].name}</td>
+                                    <td>${data[item].price}</td>
+                                    <td><button class="smallBtn" onclick="addToCart(${item})"><i class="fas fa-plus"></i></button></td>
+                                </tr>
+                            </table>
+                        `;
+                        count++;
+                    }
+                }
+                if(count == 0) {
+                            result = `<h3>Không tìm thấy kết quả</h3>`;
+                        } else {
+                            str = `<h3>Không tìm thấy kết quả</h3>`;
+                            if(checkWord(result, str)) {
+                                result.substr(str, str.length);
+                            } 
+                        }
+                searchResult.innerHTML = result;
+            } else {
+                searchResult.style.display = "none";
+            }
+        }
+
+        function checkWord(item, char) {
+            if(item.toLowerCase().indexOf(char.toLowerCase()) >= 0) {
+                return true;
+            }
+            return false;
         }
     </script>
 </body>

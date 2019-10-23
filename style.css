@@ -199,3 +199,44 @@
 .thank h1 {
     font-size: 70px;
 }
+.searchItem {
+    position: relative;
+    display: inline-block;
+    margin-right: 180px;
+    width: 400px;
+}
+.searchItem input[type="text"] {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 20px;
+    font-size: 15px;
+    padding: 5px 0;
+}
+.searchResult {
+    position: absolute;
+    top: 35px;
+    left: 4%;
+    width: 350px;
+    padding: 10px 10px;
+    border: 1px solid#d3d3d3;
+    display: none;
+    background: white;
+}
+.smallBtn {
+    padding: 5px 10px;
+    border-radius: 50%;
+    border: 1px solid #38ada9;
+    background: transparent;
+    cursor: pointer;
+}
+.smallBtn:hover {
+    background: #38ada9;
+    color: white;
+}
+.smallTable {
+    width: 100%;
+}
+.smallTable td {
+    padding: 5px;
+    font-size: 14px;
+}
